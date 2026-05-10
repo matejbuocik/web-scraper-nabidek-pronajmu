@@ -23,7 +23,7 @@ class ScraperBezrealitky(ScraperBase):
     API: ClassVar[str] = "https://api.bezrealitky.cz/"
     OFFER_TYPE: ClassVar[str] = "PRONAJEM"
     ESTATE_TYPE: ClassVar[str] = "BYT"
-    BRNO: ClassVar[str] = "R438171"
+    PRAHA: ClassVar[str] = "R435541"
 
     class Routes(abstract):
         GRAPHQL: ClassVar[str] = "graphql/"
@@ -56,7 +56,7 @@ class ScraperBezrealitky(ScraperBase):
             "estateType": self.ESTATE_TYPE,
             "offerType": self.OFFER_TYPE,
             "disposition": self.get_dispositions_data(),
-            "regionOsmIds": [self.BRNO],
+            "regionOsmIds": [self.PRAHA],
         }
         self._config["variables"].update(match)
 
