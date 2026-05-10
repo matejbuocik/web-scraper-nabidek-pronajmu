@@ -1,6 +1,5 @@
 import functools
 import operator
-import os
 from pathlib import Path
 
 import environ
@@ -8,13 +7,8 @@ from dotenv import load_dotenv
 
 from disposition import Disposition
 
-load_dotenv(".env")
 
-app_env = os.getenv("APP_ENV")
-if app_env:
-    load_dotenv(".env." + app_env, override=True)
-
-load_dotenv(".env.local", override=True)
+load_dotenv(override=False)
 
 _str_to_disposition_map = {
     "1+kk": Disposition.FLAT_1KK,
