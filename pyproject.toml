@@ -1,0 +1,13 @@
+[project]
+name = "web-scraper-nabidek-pronajmu"
+version = "0.1.0"
+description = "Nástroj pro hlídání nových nabídek nemovitostí na populárních realitních serverech. Nabídky jsou vypisovány do Discord roomky."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "discord-py>=2.7.1",
+    "environ-config>=24.1.0",
+    "python-dotenv>=1.2.2",
+    "requests>=2.33.1",
+]
