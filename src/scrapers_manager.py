@@ -4,8 +4,8 @@ import traceback
 from disposition import Disposition
 from scrapers.rental_offer import RentalOffer
 from scrapers.scraper_base import ScraperBase
-from scrapers.scraper_bravis import ScraperBravis
-from scrapers.scraper_euro_bydleni import ScraperEuroBydleni
+#from scrapers.scraper_bravis import ScraperBravis
+#from scrapers.scraper_euro_bydleni import ScraperEuroBydleni
 from scrapers.scraper_idnes_reality import ScraperIdnesReality
 from scrapers.scraper_realcity import ScraperRealcity
 # from scrapers.scraper_realingo import ScraperRealingo
@@ -17,8 +17,8 @@ from scrapers.scraper_bezrealitky import ScraperBezrealitky
 
 def create_scrapers(dispositions: Disposition) -> list[ScraperBase]:
     return [
-        ScraperBravis(dispositions),
-        ScraperEuroBydleni(dispositions),
+        #ScraperBravis(dispositions),
+        #ScraperEuroBydleni(dispositions),
         ScraperIdnesReality(dispositions),
         ScraperRealcity(dispositions),
         #ScraperRealingo(dispositions),
