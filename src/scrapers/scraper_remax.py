@@ -8,9 +8,6 @@ from bs4 import BeautifulSoup
 from disposition import Disposition
 from scrapers.rental_offer import RentalOffer
 from scrapers.scraper_base import ScraperBase
-from scrapers.rental_offer import RentalOffer
-from urllib.parse import urljoin
-from bs4 import BeautifulSoup
 
 
 class ScraperRemax(ScraperBase):

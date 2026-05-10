@@ -1,7 +1,6 @@
 import logging
 import traceback
 
-from config import *
 from disposition import Disposition
 from scrapers.rental_offer import RentalOffer
 from scrapers.scraper_base import ScraperBase
@@ -9,7 +8,7 @@ from scrapers.scraper_bravis import ScraperBravis
 from scrapers.scraper_euro_bydleni import ScraperEuroBydleni
 from scrapers.scraper_idnes_reality import ScraperIdnesReality
 from scrapers.scraper_realcity import ScraperRealcity
-from scrapers.scraper_realingo import ScraperRealingo
+# from scrapers.scraper_realingo import ScraperRealingo
 from scrapers.scraper_remax import ScraperRemax
 from scrapers.scraper_sreality import ScraperSreality
 from scrapers.scraper_ulov_domov import ScraperUlovDomov

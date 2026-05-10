@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+from scrapers.scraper_base import ScraperBase
 
 @dataclass
 class RentalOffer:
@@ -20,5 +20,5 @@ class RentalOffer:
     image_url: str
     """Náhledový obrázek nabídky"""
 
-    scraper: 'ScraperBase'
+    scraper: ScraperBase
     """Odkaz na instanci srapera, ze kterého tato nabídka pochází"""

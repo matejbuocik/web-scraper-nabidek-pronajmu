@@ -6,12 +6,11 @@ from time import time
 import discord
 from discord.ext import tasks
 
-from config import *
+from config import config
 from discord_logger import DiscordLogger
 from offers_storage import OffersStorage
 from scrapers.rental_offer import RentalOffer
 from scrapers_manager import create_scrapers, fetch_latest_offers
-from datetime import datetime
 import asyncio
 
 def get_current_daytime() -> bool: return datetime.now().hour in range(6, 22)

@@ -7,8 +7,6 @@ import requests
 from disposition import Disposition
 from scrapers.rental_offer import RentalOffer
 from scrapers.scraper_base import ScraperBase
-from scrapers.rental_offer import RentalOffer
-import requests
 
 
 class ScraperRealingo(ScraperBase):

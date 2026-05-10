@@ -7,9 +7,6 @@ from bs4 import BeautifulSoup
 from disposition import Disposition
 from scrapers.rental_offer import RentalOffer
 from scrapers.scraper_base import ScraperBase
-from scrapers.rental_offer import RentalOffer
-import requests
-from bs4 import BeautifulSoup
 
 
 class ScraperIdnesReality(ScraperBase):

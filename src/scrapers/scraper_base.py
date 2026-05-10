@@ -42,7 +42,7 @@ class ScraperBase():
         return list(flatten([self.disposition_mapping[d] for d in self.disposition]))
 
     @abstractmethod
-    def build_response() -> Response:
+    def build_response(self) -> Response:
         """Vytvoří a pošle dotaz na server pro získání nabídek podle nakonfigurovaných parametrů
 
         Raises:
@@ -54,7 +54,7 @@ class ScraperBase():
         raise NotImplementedError("Server request builder is not implemeneted")
 
     @abstractmethod
-    def get_latest_offers() -> list[RentalOffer]:
+    def get_latest_offers(self) -> list[RentalOffer]:
         """Načte a vrátí seznam nejnovějších nabídek bytů k pronájmu z dané služby
 
         Raises:

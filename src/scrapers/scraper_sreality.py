@@ -7,10 +7,6 @@ import requests
 from disposition import Disposition
 from scrapers.rental_offer import RentalOffer
 from scrapers.scraper_base import ScraperBase
-from scrapers.rental_offer import RentalOffer
-from time import time
-import requests
-from urllib.parse import urljoin
 
 
 class ScraperSreality(ScraperBase):
