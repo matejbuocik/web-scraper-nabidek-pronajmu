@@ -4,8 +4,12 @@ from typing import Any
 from requests import Response
 
 from disposition import Disposition
-from scrapers.rental_offer import RentalOffer
 from utils import flatten
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from scrapers.rental_offer import RentalOffer
 
 
 class ScraperBase():
@@ -54,7 +58,7 @@ class ScraperBase():
         raise NotImplementedError("Server request builder is not implemeneted")
 
     @abstractmethod
-    def get_latest_offers(self) -> list[RentalOffer]:
+    def get_latest_offers(self) -> list["RentalOffer"]:
         """Načte a vrátí seznam nejnovějších nabídek bytů k pronájmu z dané služby
 
         Raises:

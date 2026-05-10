@@ -1,5 +1,8 @@
 from dataclasses import dataclass
-from scrapers.scraper_base import ScraperBase
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from scrapers.scraper_base import ScraperBase
 
 @dataclass
 class RentalOffer:
@@ -20,5 +23,5 @@ class RentalOffer:
     image_url: str
     """Náhledový obrázek nabídky"""
 
-    scraper: ScraperBase
-    """Odkaz na instanci srapera, ze kterého tato nabídka pochází"""
+    scraper: "ScraperBase"
+    """Odkaz na instanci scrapera, ze kterého tato nabídka pochází"""
