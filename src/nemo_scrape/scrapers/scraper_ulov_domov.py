@@ -3,9 +3,9 @@ import logging
 
 import requests
 
-from disposition import Disposition
-from scrapers.scraper_base import ScraperBase
-from scrapers.rental_offer import RentalOffer
+from ..disposition import Disposition
+from .scraper_base import ScraperBase
+from .rental_offer import RentalOffer
 
 
 class ScraperUlovDomov(ScraperBase):

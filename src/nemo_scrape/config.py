@@ -3,7 +3,7 @@ from pathlib import Path
 import environ
 from dotenv import load_dotenv
 
-from disposition import Disposition
+from .disposition import Disposition
 
 
 load_dotenv(override=False)

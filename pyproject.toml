@@ -1,5 +1,5 @@
 [project]
-name = "web-scraper-nabidek-pronajmu"
+name = "nemo-scrape"
 version = "0.1.0"
 description = "Nástroj pro hlídání nových nabídek nemovitostí na populárních realitních serverech. Nabídky jsou vypisovány do Discord roomky."
 readme = "README.md"
@@ -11,3 +11,10 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "requests>=2.33.1",
 ]
+
+[project.scripts]
+nemo-scrape = "nemo_scrape.main:main"
+
+[build-system]
+requires = ["uv-build>=0.11.13,<0.13"]
+build-backend = "uv_build"

@@ -1,15 +1,13 @@
 from abc import abstractmethod
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from requests import Response
 
-from disposition import Disposition
-from utils import flatten
-
-from typing import TYPE_CHECKING
+from ..disposition import Disposition
+from ..utils import flatten
 
 if TYPE_CHECKING:
-    from scrapers.rental_offer import RentalOffer
+    from .rental_offer import RentalOffer
 
 
 class ScraperBase():

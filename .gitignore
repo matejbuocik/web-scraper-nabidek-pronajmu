@@ -1,4 +1,6 @@
 **/__pycache__
+*.egg-info/
+build/
 remembered_offers.txt
 found_offers.txt
 data/

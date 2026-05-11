@@ -1,6 +1,6 @@
 import os
 
-from scrapers.rental_offer import RentalOffer
+from .scrapers.rental_offer import RentalOffer
 
 
 class OffersStorage:

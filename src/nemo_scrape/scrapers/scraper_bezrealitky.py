@@ -4,11 +4,12 @@ author: Mark Barzali
 
 import json
 from abc import ABC as abstract
+from importlib.resources import files
 from typing import ClassVar
 
-from disposition import Disposition
-from scrapers.scraper_base import ScraperBase
-from scrapers.rental_offer import RentalOffer
+from ..disposition import Disposition
+from .scraper_base import ScraperBase
+from .rental_offer import RentalOffer
 import requests
 
 
@@ -18,7 +19,6 @@ class ScraperBezrealitky(ScraperBase):
     logo_url = "https://www.bezrealitky.cz/pwa/icon-192x192-maskable.png"
     color = 0x00906C
     base_url = "https://www.bezrealitky.cz"
-    file: ClassVar[str] = "./graphql/bezrealitky.json"
 
     API: ClassVar[str] = "https://api.bezrealitky.cz/"
     OFFER_TYPE: ClassVar[str] = "PRONAJEM"
@@ -48,8 +48,10 @@ class ScraperBezrealitky(ScraperBase):
         self._patch_config()
 
     def _read_config(self) -> None:
-        with open(ScraperBezrealitky.file, "r") as file:
-            self._config = json.load(file)
+        path = files("nemo_scrape").joinpath(
+            "graphql", "bezrealitky.json"
+        )
+        self._config = json.loads(path.read_text(encoding="utf-8"))
 
     def _patch_config(self):
         match = {

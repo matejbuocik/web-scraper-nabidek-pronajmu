@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from scrapers.scraper_base import ScraperBase
+    from .scraper_base import ScraperBase
 
 
 def parse_monthly_price_czk(price: int | str) -> int | None:

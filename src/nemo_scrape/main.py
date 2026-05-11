@@ -7,11 +7,11 @@ from time import time
 import discord
 from discord.ext import tasks
 
-from config import config
-from discord_logger import DiscordLogger
-from offers_storage import OffersStorage
-from scrapers.rental_offer import RentalOffer, offer_matches_price_range
-from scrapers_manager import create_scrapers, fetch_latest_offers
+from .config import config
+from .discord_logger import DiscordLogger
+from .offers_storage import OffersStorage
+from .scrapers.rental_offer import RentalOffer, offer_matches_price_range
+from .scrapers_manager import create_scrapers, fetch_latest_offers
 
 
 def get_current_daytime() -> bool:
@@ -158,7 +158,7 @@ async def retry_until_successful_edit(channel: discord.TextChannel, topic: str, 
             raise
         await asyncio.sleep(delay)
 
-if __name__ == "__main__":
+def main() -> None:
     logging.basicConfig(
         level=(logging.DEBUG if config.debug else logging.INFO),
         format='%(asctime)s - [%(levelname)s] %(message)s',
@@ -167,3 +167,7 @@ if __name__ == "__main__":
     logging.debug("Running in debug mode")
 
     client.run(config.discord.token, log_level=logging.INFO)
+
+
+if __name__ == "__main__":
+    main()

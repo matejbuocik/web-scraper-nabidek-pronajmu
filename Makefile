@@ -4,7 +4,7 @@ install:
 	uv sync
 
 run:
-	uv run python src/main.py
+	uv run nemo-scrape
 
 debug:
-	DEBUG=1 uv run python src/main.py
+	DEBUG=1 uv run nemo-scrape
