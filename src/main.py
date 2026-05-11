@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
+import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from time import time
 
 import discord
@@ -11,14 +12,42 @@ from discord_logger import DiscordLogger
 from offers_storage import OffersStorage
 from scrapers.rental_offer import RentalOffer, offer_matches_price_range
 from scrapers_manager import create_scrapers, fetch_latest_offers
-import asyncio
 
-def get_current_daytime() -> bool: return datetime.now().hour in range(6, 22)
+
+def get_current_daytime() -> bool:
+    return 6 <= datetime.now().hour < 22
+
+
+def refresh_interval_minutes(is_daytime: bool) -> int:
+    return (
+        config.refresh_interval_daytime_minutes
+        if is_daytime
+        else config.refresh_interval_nighttime_minutes
+    )
+
+
+def chunk_offers(offers: list[RentalOffer], size: int):
+    for i in range(0, len(offers), size):
+        yield offers[i : i + size]
+
+
+def offer_embed(offer: RentalOffer) -> discord.Embed:
+    embed = discord.Embed(
+        title=offer.title,
+        url=offer.link,
+        description=offer.location,
+        timestamp=datetime.now(timezone.utc),
+        color=offer.scraper.color,
+    )
+    embed.add_field(name="Cena", value=f"{offer.price} Kč")
+    embed.set_author(name=offer.scraper.name, icon_url=offer.scraper.logo_url)
+    embed.set_image(url=offer.image_url)
+    return embed
 
 
 client = discord.Client(intents=discord.Intents.default())
 daytime = get_current_daytime()
-interval_time = config.refresh_interval_daytime_minutes if daytime else config.refresh_interval_nighttime_minutes
+interval_time = refresh_interval_minutes(daytime)
 
 scrapers = create_scrapers(config.dispositions)
 
@@ -46,10 +75,9 @@ async def on_ready():
 async def process_latest_offers():
     logging.info("Fetching offers")
 
-    new_offers: list[RentalOffer] = []
-    for offer in fetch_latest_offers(scrapers):
-        if not storage.contains(offer):
-            new_offers.append(offer)
+    new_offers = [
+        o for o in fetch_latest_offers(scrapers) if not storage.contains(o)
+    ]
 
     first_time = storage.first_time
     storage.save_offers(new_offers)
@@ -74,39 +102,18 @@ async def process_latest_offers():
     )
 
     if not first_time:
-        def chunk_offers(offers, size):
-            for i in range(0, len(offers), size):
-                yield offers[i:i + size]
-
         for offer_batch in chunk_offers(offers_to_announce, config.embed_batch_size):
-            embeds = []
-
-            for offer in offer_batch:
-                embed = discord.Embed(
-                    title=offer.title,
-                    url=offer.link,
-                    description=offer.location,
-                    timestamp=datetime.utcnow(),
-                    color=offer.scraper.color
-                )
-                embed.add_field(name="Cena", value=str(offer.price) + " Kč")
-                embed.set_author(name=offer.scraper.name, icon_url=offer.scraper.logo_url)
-                embed.set_image(url=offer.image_url)
-
-                embeds.append(embed)
-
+            embeds = [offer_embed(o) for o in offer_batch]
             await retry_until_successful_send(channel, embeds)
             await asyncio.sleep(1.5)
     else:
         logging.info("No previous offers, first fetch is running silently")
 
     global daytime, interval_time
-    if daytime != get_current_daytime():  # Pokud stary daytime neodpovida novemu
-
-        daytime = not daytime  # Zneguj daytime (podle podminky se zmenil)
-
-        interval_time = config.refresh_interval_daytime_minutes if daytime else config.refresh_interval_nighttime_minutes
-
+    current_daytime = get_current_daytime()
+    if current_daytime != daytime:
+        daytime = current_daytime
+        interval_time = refresh_interval_minutes(daytime)
         logging.info("Fetching latest offers every {} minutes".format(interval_time))
         process_latest_offers.change_interval(minutes=interval_time)
 
@@ -124,9 +131,11 @@ async def retry_until_successful_send(channel: discord.TextChannel, embeds: list
             logging.warning(f"Discord server error while sending embeds: {e}. Retrying in {delay:.1f}s.")
         except discord.errors.HTTPException as e:
             logging.warning(f"HTTPException while sending embeds: {e}. Retrying in {delay:.1f}s.")
-        except Exception as e:
-            logging.exception(f"Unexpected error while sending embeds: {e}. Retrying in {delay:.1f}s.")
-            raise e
+        except Exception:
+            logging.exception(
+                "Unexpected error while sending embeds. Retrying in %.1fs.", delay
+            )
+            raise
         await asyncio.sleep(delay)
 
 
@@ -141,9 +150,12 @@ async def retry_until_successful_edit(channel: discord.TextChannel, topic: str, 
             logging.warning(f"Discord server error while editing topic: {e}. Retrying in {delay:.1f}s.")
         except discord.errors.HTTPException as e:
             logging.warning(f"HTTPException while editing topic: {e}. Retrying in {delay:.1f}s.")
-        except Exception as e:
-            logging.exception(f"Unexpected error while editing channel topic: {e}. Retrying in {delay:.1f}s.")
-            raise e
+        except Exception:
+            logging.exception(
+                "Unexpected error while editing channel topic. Retrying in %.1fs.",
+                delay,
+            )
+            raise
         await asyncio.sleep(delay)
 
 if __name__ == "__main__":

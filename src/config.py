@@ -1,5 +1,3 @@
-import functools
-import operator
 from pathlib import Path
 
 import environ
@@ -23,8 +21,11 @@ _str_to_disposition_map = {
     "others": Disposition.FLAT_OTHERS
 }
 
-def dispositions_converter(raw_disps: str):
-    return functools.reduce(operator.or_, map(lambda d: _str_to_disposition_map[d], raw_disps.split(",")), Disposition.NONE)
+def dispositions_converter(raw_disps: str) -> Disposition:
+    flags = Disposition.NONE
+    for key in raw_disps.split(","):
+        flags |= _str_to_disposition_map[key]
+    return flags
 
 
 def _optional_int(raw: str | None) -> int | None:
