@@ -27,6 +27,21 @@ def dispositions_converter(raw_disps: str):
     return functools.reduce(operator.or_, map(lambda d: _str_to_disposition_map[d], raw_disps.split(",")), Disposition.NONE)
 
 
+def _optional_int(raw: str | None) -> int | None:
+    if raw is None:
+        return None
+    stripped = raw.strip()
+    if stripped == "":
+        return None
+    try:
+        return int(stripped)
+    except ValueError as e:
+        raise ValueError(
+            "Price filter env vars (PRICE_MIN_KC, PRICE_MAX_KC) must be a whole "
+            f"number in Kč or left unset. Got {raw!r}."
+        ) from e
+
+
 @environ.config(prefix="")
 class Config:
     debug: bool = environ.bool_var()
@@ -35,6 +50,8 @@ class Config:
     refresh_interval_nighttime_minutes: int = environ.var(converter=int)
     dispositions: Disposition = environ.var(converter=dispositions_converter)
     embed_batch_size: int = environ.var(converter=int, default=10)
+    price_min_kc: int | None = environ.var(default=None, converter=_optional_int)
+    price_max_kc: int | None = environ.var(default=None, converter=_optional_int)
 
     @environ.config()
     class Discord:
@@ -44,4 +61,20 @@ class Config:
 
     discord: Discord = environ.group(Discord)
 
+
+def _validate_price_filter_bounds(c: Config) -> None:
+    for env_name, value in (
+        ("PRICE_MIN_KC", c.price_min_kc),
+        ("PRICE_MAX_KC", c.price_max_kc),
+    ):
+        if value is not None and value < 0:
+            raise ValueError(f"{env_name} must be >= 0 or unset, got {value}.")
+    lo, hi = c.price_min_kc, c.price_max_kc
+    if lo is not None and hi is not None and lo > hi:
+        raise ValueError(
+            f"PRICE_MIN_KC ({lo}) must be <= PRICE_MAX_KC ({hi})."
+        )
+
+
 config: Config = Config.from_environ()
+_validate_price_filter_bounds(config)

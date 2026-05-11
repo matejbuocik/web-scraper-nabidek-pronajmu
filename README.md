@@ -52,6 +52,7 @@ Aplikace při prvním spuštění nevypíše žádné nabídky, pouze si stáhne
 
 ### Další konfigurovatelné Env proměnné
 Tyto hodnoty jsou nastavené pro bězné použití a není potřeba ji měnit. Zde je každopádně popis těchto hodnot.
+- `PRICE_MIN_KC` / `PRICE_MAX_KC` (volitelné, nezáporné celé číslo v Kč; `PRICE_MIN_KC` nesmí být větší než `PRICE_MAX_KC`, jinak aplikace při startu skončí chybou). Do Discordu se pošlou jen nové nabídky s měsíčním nájmem v tomto rozmezí (podle prvního čísla u zdrojů, kde je cena textově). Nenastavená mez se nebere v úvahu. Je-li aspoň jedna mez nastavená a z ceny nabídky nepůjde vyčíst číslo, nabídka se do Discordu pošle také. Nabídky mimo rozsah se stále uloží, aby se neopakovaly při dalším běhu.
 - `DEBUG` (boolean, výchozí vypnuto). Aktivuje režim ladění aplikace, především podrobnějšího výpisu do konzole. Vhodné pro vývoj.
 - `FOUND_OFFERS_FILE` Cesta k souboru, kam se ukládají dříve nalezené nabídky. Aplikace si soubor vytvoří, ale složka musí existovat. Pokud aplikace nebyla nějakou dobu spuštěna (řádově týdny) je dobré tento soubor smazat - aplikace by toto vyhodnotila jako velké množství nových nabídek a zaspamovala by Discord kanál.
 - `REFRESH_INTERVAL_DAYTIME_MINUTES` - interval po který se mají stáhnout nejnovější nabídky Výchozí 30min, doporučeno minimálně 10min

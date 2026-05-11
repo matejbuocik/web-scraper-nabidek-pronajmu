@@ -1,4 +1,4 @@
-#!/usr/bin/evn python3
+#!/usr/bin/env python3
 import logging
 from datetime import datetime
 from time import time
@@ -9,7 +9,7 @@ from discord.ext import tasks
 from config import config
 from discord_logger import DiscordLogger
 from offers_storage import OffersStorage
-from scrapers.rental_offer import RentalOffer
+from scrapers.rental_offer import RentalOffer, offer_matches_price_range
 from scrapers_manager import create_scrapers, fetch_latest_offers
 import asyncio
 
@@ -54,14 +54,31 @@ async def process_latest_offers():
     first_time = storage.first_time
     storage.save_offers(new_offers)
 
-    logging.info("Offers fetched (new: {})".format(len(new_offers)))
+    offers_to_announce = [
+        o
+        for o in new_offers
+        if offer_matches_price_range(o, config.price_min_kc, config.price_max_kc)
+    ]
+    skipped_price = len(new_offers) - len(offers_to_announce)
+    if skipped_price:
+        logging.info(
+            "Excluded {} new offers outside price range (min={}, max={} Kč)".format(
+                skipped_price, config.price_min_kc, config.price_max_kc
+            )
+        )
+
+    logging.info(
+        "Offers fetched (new: {}, to announce: {})".format(
+            len(new_offers), len(offers_to_announce)
+        )
+    )
 
     if not first_time:
         def chunk_offers(offers, size):
             for i in range(0, len(offers), size):
                 yield offers[i:i + size]
 
-        for offer_batch in chunk_offers(new_offers, config.embed_batch_size):
+        for offer_batch in chunk_offers(offers_to_announce, config.embed_batch_size):
             embeds = []
 
             for offer in offer_batch:
